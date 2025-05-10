@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\LoginRequest;
 use App\Services\ApiResponse;
+use Illuminate\Http\Response;
 
 class AuthController extends Controller
 {
@@ -18,7 +19,7 @@ class AuthController extends Controller
             return ApiResponse::success([
                 'token' => $token,
                 'user' => $user,
-            ], 200, 'Login successful');
+            ], Response::HTTP_OK, 'Login successful');
         }
 
         return ApiResponse::unauthorized('Invalid credentials');
@@ -27,6 +28,6 @@ class AuthController extends Controller
     public function logout()
     {
         auth()->user()->tokens()->delete();
-        return ApiResponse::success([], 200, 'Logout successful');
+        return ApiResponse::success([], Response::HTTP_OK, 'Logout successful');
     }
 }

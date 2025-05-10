@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Response;
 
 class ApiResponse
 {
@@ -15,7 +16,7 @@ class ApiResponse
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public static function success(array $data = [], int $statusCode = 200, string $message = null): JsonResponse
+    public static function success(array $data = [], int $statusCode = Response::HTTP_OK, string $message = null): JsonResponse
     {
         return response()->json([
             'status_code' => $statusCode,
@@ -32,7 +33,7 @@ class ApiResponse
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public static function error(string $message = null, int $statusCode = 400): JsonResponse
+    public static function error(string $message = null, int $statusCode = Response::HTTP_BAD_REQUEST): JsonResponse
     {
         return response()->json([
             'status_code' => $statusCode,
@@ -48,7 +49,7 @@ class ApiResponse
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public static function unauthorized(string $message = null, int $statusCode = 401): JsonResponse
+    public static function unauthorized(string $message = null, int $statusCode = Response::HTTP_UNAUTHORIZED): JsonResponse
     {
         return response()->json([
             'status_code' => $statusCode,

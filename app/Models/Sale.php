@@ -42,6 +42,7 @@ class Sale extends Model
      */
     protected $fillable = [
         'seller_id',
+        'created_by_id',
         'value',
         'sale_date',
     ];

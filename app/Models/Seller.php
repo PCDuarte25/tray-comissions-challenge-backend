@@ -34,6 +34,7 @@ class Seller extends Model
      * @var list<string>
      */
     protected $fillable = [
+        'created_by_id',
         'name',
         'email',
     ];
