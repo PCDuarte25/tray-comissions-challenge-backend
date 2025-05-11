@@ -19,6 +19,9 @@ return new class extends Migration
             $table->boolean('reported')->default(false);
             $table->timestamps();
 
+            $table->index('sale_date');
+            $table->index(['seller_id', 'reported']);
+
             $table->foreignId('seller_id')->constrained('sellers')->onDelete('cascade');
             $table->foreignId('created_by_id')->constrained('users')->onDelete('cascade');
         });
