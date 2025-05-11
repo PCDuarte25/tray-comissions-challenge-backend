@@ -19,16 +19,19 @@ use Illuminate\Support\Facades\Route;
 
 // This is the API route file for the application.
 Route::prefix('v1')->middleware('auth:sanctum')->group(function () {
+    // Routes for handling seller operations.
     Route::post('/seller', [SellerController::class, 'store']);
     Route::post('/seller/{id}/resend-report', [SellerController::class, 'resendReport']);
     Route::get('/seller', [SellerController::class, 'index']);
     Route::get('/seller/{id}', [SellerController::class, 'show']);
     Route::get('/seller/{id}/sale', [SellerController::class, 'getSalesBySellerId']);
 
+    // Routes for handling sale operations.
     Route::post('/sale', [SaleController::class, 'store']);
     Route::get('/sale', [SaleController::class, 'index']);
     Route::get('/sale/{id}', [SaleController::class, 'show']);
 
+    // Routes for handling configuration operations.
     Route::put('/configuration/{id}', [ConfigurationController::class, 'updateConfiguration']);
 });
 

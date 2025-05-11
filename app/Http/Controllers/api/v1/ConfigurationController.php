@@ -8,6 +8,9 @@ use App\Repositories\ConfigurationRepository;
 use App\Services\ApiResponse;
 use Illuminate\Http\Response;
 
+/**
+ * Controller for handling configuration updates.
+ */
 class ConfigurationController extends Controller
 {
     /**
@@ -17,6 +20,17 @@ class ConfigurationController extends Controller
         private ConfigurationRepository $configurationRepository
     ) {}
 
+    /**
+     * Update the configuration value.
+     *
+     * @param \App\Http\Requests\ConfigurationRequest $request
+     *   The request containing the configuration data.
+     * @param string $id
+     *   The ID of the configuration to update.
+     *
+     * @return \App\Services\ApiResponse
+     *   The response indicating success or failure.
+     */
     public function updateConfiguration(ConfigurationRequest $request, string $id)
     {
         return $this->executeInTransaction(function() use ($request, $id) {

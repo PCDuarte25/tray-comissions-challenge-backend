@@ -8,16 +8,16 @@ use Illuminate\Database\Eloquent\Collection;
 
 class SellerRepository implements SellerRepositoryInterface
 {
-
+    /**
+     * @inheritDoc
+     */
     public function getAllSellers(): Collection
     {
         return Seller::all();
     }
 
     /**
-     * @param int $id
-     *
-     * @return Seller|null
+     * @inheritDoc
      */
     public function getSellerById(int $id): ?Seller
     {
@@ -25,9 +25,7 @@ class SellerRepository implements SellerRepositoryInterface
     }
 
     /**
-     * @param App\DTOs\SellerDataDto $data
-     *
-     * @return Seller
+     * @inheritDoc
      */
     public function createSeller(SellerDataDto $data): Seller
     {

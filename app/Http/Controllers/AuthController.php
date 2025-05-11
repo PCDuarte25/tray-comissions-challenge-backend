@@ -6,8 +6,20 @@ use App\Http\Requests\LoginRequest;
 use App\Services\ApiResponse;
 use Illuminate\Http\Response;
 
+/**
+ * Controller for handling authentication.
+ */
 class AuthController extends Controller
 {
+    /**
+     * Login a user.
+     *
+     * @param \App\Http\Requests\LoginRequest $request
+     *   The login request.
+     *
+     * @return \App\Services\ApiResponse
+     *   The response containing the token and user information.
+     */
     public function login(LoginRequest $request)
     {
         $request->validated();
@@ -25,6 +37,12 @@ class AuthController extends Controller
         return ApiResponse::unauthorized('Invalid credentials');
     }
 
+    /**
+     * Logout the authenticated user.
+     *
+     * @return \App\Services\ApiResponse
+     *   The response indicating logout success.
+     */
     public function logout()
     {
         auth()->user()->tokens()->delete();

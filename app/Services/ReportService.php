@@ -10,13 +10,22 @@ use App\Repositories\SellerRepository;
 use App\Repositories\SaleRepository;
 use Illuminate\Support\Facades\Log;
 
+/**
+ * This service is responsible for generating and sending reports to sellers and admins.
+ */
 class ReportService implements ReportServiceInterface
 {
+    /**
+     * Creates a new instance of the ReportService.
+     */
     public function __construct(
         private SellerRepository $sellerRepository,
         private SaleRepository $saleRepository
     ) {}
 
+    /**
+     * @inheritDoc
+     */
     public function sendDailyReports(string $date): void
     {
         $sales = $this->saleRepository->getUnreportedSalesByDate($date);
@@ -35,6 +44,9 @@ class ReportService implements ReportServiceInterface
         $this->saleRepository->markSalesAsReported($sales->pluck('id')->toArray());
     }
 
+    /**
+     * @inheritDoc
+     */
     public function sendSellerReport(Seller $seller, string $date): void
     {
         try {
@@ -61,6 +73,9 @@ class ReportService implements ReportServiceInterface
         }
     }
 
+    /**
+     * @inheritDoc
+     */
     public function sendAdminReportData(string $date): void
     {
         $sales = $this->saleRepository->getAllSales();

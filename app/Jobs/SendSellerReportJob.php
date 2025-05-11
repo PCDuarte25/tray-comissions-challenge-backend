@@ -11,10 +11,16 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Mail;
 
+/**
+ * This job is responsible for sending the seller report email.
+ */
 class SendSellerReportJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
+    /**
+     * Instantiate a new job instance.
+     */
     public function __construct(
         private Seller $seller,
         private int $salesCount,
@@ -23,6 +29,9 @@ class SendSellerReportJob implements ShouldQueue
         private string $date
     ) {}
 
+    /**
+     * Execute the job.
+     */
     public function handle()
     {
         Mail::to($this->seller->email)->send(

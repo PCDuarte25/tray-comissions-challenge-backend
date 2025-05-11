@@ -1,19 +1,20 @@
 version: '3.8'
 
 services:
-#   web:
-#     build: .
-#     ports:
-#       - "9000:80"
-#     networks:
-#       - laravel
-#     depends_on:
-#       - db
-#       - mailhog
-#     environment:
-#       - MAIL_MAILER=smtp
-#       - MAIL_HOST=mailhog
-#       - MAIL_PORT=1025
+  web:
+    build: .
+    ports:
+      - "9000:80"
+    networks:
+      - laravel
+    depends_on:
+      - db
+      - mailhog
+      - redis
+    environment:
+      - MAIL_MAILER=smtp
+      - MAIL_HOST=mailhog
+      - MAIL_PORT=1025
 
   db:
     image: mysql

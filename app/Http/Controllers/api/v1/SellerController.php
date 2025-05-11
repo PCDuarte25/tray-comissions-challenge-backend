@@ -16,6 +16,9 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 
+/**
+ * Controller for handling seller operations.
+ */
 class SellerController extends Controller
 {
     /**
@@ -29,6 +32,9 @@ class SellerController extends Controller
 
     /**
      * Display a listing of the resource.
+     *
+     * @return \App\Services\ApiResponse
+     *   The response containing the list of sellers.
      */
     public function index()
     {
@@ -44,6 +50,12 @@ class SellerController extends Controller
 
     /**
      * Store a newly created resource in storage.
+     *
+     * @param \App\Http\Requests\StoreSellerRequest $request
+     *   The request containing the seller data.
+     *
+     * @return \App\Services\ApiResponse
+     *   The response indicating success or failure.
      */
     public function store(StoreSellerRequest $request)
     {
@@ -62,6 +74,12 @@ class SellerController extends Controller
 
     /**
      * Display the specified resource.
+     *
+     * @param string $id
+     *   The ID of the seller to display.
+     *
+     * @return \App\Services\ApiResponse
+     *   The response containing the seller information.
      */
     public function show(string $id)
     {
@@ -79,7 +97,13 @@ class SellerController extends Controller
     }
 
     /**
-     * Display the sales of the specified seller.
+     * Get the sales for a specific seller by their ID.
+     *
+     * @param string $id
+     *   The ID of the seller.
+     *
+     * @return \App\Services\ApiResponse
+     *  The response containing the sales information.
      */
     public function getSalesBySellerId(string $id)
     {
@@ -87,11 +111,7 @@ class SellerController extends Controller
             $cacheKey = "sellers_{$id}_sales";
             $cacheTags = ['sales', 'sellers'];
 
-            // $sales = Cache::tags($cacheTags)->remember($cacheKey, 30, function () use ($id) {
-            //     return $this->saleRepository->getSalesBySellerId($id);
-            // });
-
-            $sales = Cache::remember($cacheKey, 30, function () use ($id) {
+            $sales = Cache::tags($cacheTags)->remember($cacheKey, 30, function () use ($id) {
                 return $this->saleRepository->getSalesBySellerId($id);
             });
 
@@ -101,6 +121,17 @@ class SellerController extends Controller
         });
     }
 
+    /**
+     * Resend the report for a specific seller.
+     *
+     * @param \App\Http\Requests\ResendReportRequest $request
+     *   The request containing the report data.
+     * @param string $id
+     *   The ID of the seller.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     *   The response indicating success or failure.
+     */
     public function resendReport(ResendReportRequest $request, string $id)
     {
         try {

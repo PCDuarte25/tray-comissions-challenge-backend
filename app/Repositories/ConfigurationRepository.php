@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Collection;
 class ConfigurationRepository implements ConfigurationRepositoryInterface
 {
     /**
-     * @return Illuminate\Database\Eloquent\Collection
+     * @inheritDoc
      */
     public function getAllConfigurations(): Collection
     {
@@ -16,9 +16,7 @@ class ConfigurationRepository implements ConfigurationRepositoryInterface
     }
 
     /**
-     * @param int $id
-     *
-     * @return Configuration|null
+     * @inheritDoc
      */
     public function getConfigurationById(int $id): ?Configuration
     {
@@ -26,9 +24,7 @@ class ConfigurationRepository implements ConfigurationRepositoryInterface
     }
 
     /**
-     * @param string $key
-     *
-     * @return Configuration|null
+     * @inheritDoc
      */
     public function getConfigurationByKey(string $key): ?Configuration
     {
@@ -36,11 +32,7 @@ class ConfigurationRepository implements ConfigurationRepositoryInterface
     }
 
     /**
-     * @param int $id
-     *
-     * @param string $value
-     *
-     * @return Configuration|null
+     * @inheritDoc
      */
     public function updateConfiguration(int $id, string $value): ?Configuration
     {

@@ -8,15 +8,16 @@ use Illuminate\Database\Eloquent\Collection;
 
 class SaleRepository implements SaleRepositoryInterface
 {
+    /**
+     * @inheritDoc
+     */
     public function getAllSales(): Collection
     {
         return Sale::all();
     }
 
     /**
-     * @param int $id
-     *
-     * @return Sale|null
+     * @inheritDoc
      */
     public function getSaleById(int $id): ?Sale
     {
@@ -24,9 +25,7 @@ class SaleRepository implements SaleRepositoryInterface
     }
 
     /**
-     * @param int $id
-     *
-     * @return Illuminate\Database\Eloquent\Collection|null
+     * @inheritDoc
      */
     public function getSalesBySellerId(int $id): ?Collection
     {
@@ -34,9 +33,7 @@ class SaleRepository implements SaleRepositoryInterface
     }
 
     /**
-     * @param int $id
-     *
-     * @return Illuminate\Database\Eloquent\Collection|null
+     * @inheritDoc
      */
     public function getSalesBySellerIdFromDate(int $id, string $date): ?Collection
     {
@@ -44,20 +41,24 @@ class SaleRepository implements SaleRepositoryInterface
     }
 
     /**
-     * @param App\DTOs\SaleDataDto $data
-     *
-     * @return Sale
+     * @inheritDoc
      */
     public function createSale(SaleDataDto $data): Sale
     {
         return Sale::create($data->toArray());
     }
 
+    /**
+     * @inheritDoc
+     */
     public function getAllSalesByDate(string $date): Collection
     {
         return Sale::whereDate('sale_date', $date)->get();
     }
 
+    /**
+     * @inheritDoc
+     */
     public function getUnreportedSalesByDate(string $date): Collection
     {
         return Sale::whereDate('sale_date', $date)
@@ -66,6 +67,9 @@ class SaleRepository implements SaleRepositoryInterface
             ->get();
     }
 
+    /**
+     * @inheritDoc
+     */
     public function markSalesAsReported(array $saleIds): void
     {
         Sale::whereIn('id', $saleIds)->update(['reported' => true]);

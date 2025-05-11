@@ -9,18 +9,24 @@ use Illuminate\Database\Eloquent\Collection;
 interface SaleRepositoryInterface
 {
     /**
+     * Get all sales.
+     *
      * @return Illuminate\Database\Eloquent\Collection
      */
     public function getAllSales(): Collection;
 
     /**
+     * Get sale by ID.
+     *
      * @param int $id
      *
-     * @return Sale|null
+     * @return \App\Models\Sale|null
      */
     public function getSaleById(int $id): ?Sale;
 
     /**
+     * Get sales by seller ID.
+     *
      * @param int $id
      *
      * @return Illuminate\Database\Eloquent\Collection|null
@@ -28,8 +34,9 @@ interface SaleRepositoryInterface
     public function getSalesBySellerId(int $id): ?Collection;
 
     /**
-     * @param int $id
+     * Get sales by seller ID from a specific date.
      *
+     * @param int $id
      * @param string $date
      *
      * @return Illuminate\Database\Eloquent\Collection|null
@@ -37,13 +44,36 @@ interface SaleRepositoryInterface
     public function getSalesBySellerIdFromDate(int $id, string $date): ?Collection;
 
     /**
+     * Create a new sale.
+     *
      * @param App\DTOs\SaleDataDto $data
      *
-     * @return Sale
+     * @return \App\Models\Sale
      */
     public function createSale(SaleDataDto $data): Sale;
 
+    /**
+     * Get all sales by date.
+     *
+     * @param string $date
+     *
+     * @return Illuminate\Database\Eloquent\Collection
+     */
     public function getAllSalesByDate(string $date): Collection;
+
+    /**
+     * Get unreported sales by date.
+     *
+     * @param string $date
+     *
+     * @return Illuminate\Database\Eloquent\Collection
+     */
     public function getUnreportedSalesByDate(string $date): Collection;
+
+    /**
+     * Mark sales as reported.
+     *
+     * @param array $saleIds
+     */
     public function markSalesAsReported(array $saleIds): void;
 }

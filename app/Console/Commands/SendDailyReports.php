@@ -5,6 +5,11 @@ namespace App\Console\Commands;
 use App\Services\ReportService;
 use Illuminate\Console\Command;
 
+/**
+ * Class SendDailyReports
+ *
+ * @package App\Console\Commands
+ */
 class SendDailyReports extends Command
 {
     protected $signature = 'app:send-daily-reports';
@@ -14,12 +19,13 @@ class SendDailyReports extends Command
     /**
      * Creates a new instance of the SendDailyReports.
      */
-    public function __construct(
-        private ReportService $reportService
-    ) {
+    public function __construct(private ReportService $reportService) {
         parent::__construct();
     }
 
+    /**
+     * Execute the console command.
+     */
     public function handle(): void
     {
         $date = now()->toDateString();

@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\api\v1;
 
 use App\DTOs\SaleDataDto;
-use App\HandlesTransactions;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreSaleRequest;
 use App\Http\Resources\SaleResource;
@@ -13,6 +12,9 @@ use App\Services\ApiResponse;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Cache;
 
+/**
+ * Controller for handling sales operations.
+ */
 class SaleController extends Controller
 {
     /**
@@ -25,6 +27,9 @@ class SaleController extends Controller
 
     /**
      * Display a listing of the resource.
+     *
+     * @return \App\Services\ApiResponse
+     *   The response containing the list of sales.
      */
     public function index()
     {
@@ -40,6 +45,12 @@ class SaleController extends Controller
 
     /**
      * Store a newly created resource in storage.
+     *
+     * @param \App\Http\Requests\StoreSaleRequest $request
+     *   The request containing the sale data.
+     *
+     * @return \App\Services\ApiResponse
+     *   The response indicating success or failure.
      */
     public function store(StoreSaleRequest $request)
     {
@@ -52,7 +63,7 @@ class SaleController extends Controller
             Cache::forget('sales_all');
             Cache::forget("sale_{$sale->id}");
             Cache::forget("seller_{$sale->seller_id}_sales");
-            // Cache::tags(['sales', 'sellers'])->flush();
+            Cache::tags(['sales', 'sellers'])->flush();
 
             return ApiResponse::success([
                 'sale' => $sale
@@ -62,6 +73,12 @@ class SaleController extends Controller
 
     /**
      * Display the specified resource.
+     *
+     * @param string $id
+     *   The ID of the sale to display.
+     *
+     * @return \App\Services\ApiResponse
+     *   The response containing the sale details.
      */
     public function show(string $id)
     {
