@@ -55,4 +55,12 @@ class Sale extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    /**
+     * Get the seller that made the sale.
+     */
+    public function seller(): BelongsTo
+    {
+        return $this->belongsTo(Seller::class);
+    }
 }

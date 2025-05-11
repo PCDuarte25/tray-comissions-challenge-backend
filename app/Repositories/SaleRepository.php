@@ -34,6 +34,16 @@ class SaleRepository implements SaleRepositoryInterface
     }
 
     /**
+     * @param int $id
+     *
+     * @return Illuminate\Database\Eloquent\Collection|null
+     */
+    public function getSalesBySellerIdFromDate(int $id, string $date): ?Collection
+    {
+        return Sale::where('seller_id', $id)->whereDate('sale_date', $date)->get();
+    }
+
+    /**
      * @param App\DTOs\SaleDataDto $data
      *
      * @return Sale

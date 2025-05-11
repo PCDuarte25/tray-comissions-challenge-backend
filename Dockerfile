@@ -1,14 +1,14 @@
 FROM wyveo/nginx-php-fpm:php82
 
-WORKDIR /var/www
-
-COPY . .
+COPY . /usr/share/nginx
 
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
-RUN chown -R nginx:nginx /var/www
+WORKDIR /usr/share/nginx
 
-RUN composer install --no-interaction
+RUN chown -R nginx:nginx .
+
+RUN composer install
 
 RUN php artisan key:generate
 

@@ -4,7 +4,9 @@ namespace App\Http\Controllers\api\v1;
 
 use App\DTOs\SellerDataDto;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\ResendReportRequest;
 use App\Http\Requests\StoreSellerRequest;
+use App\Jobs\SendSellerReportJob;
 use App\Repositories\SaleRepository;
 use App\Repositories\SellerRepository;
 use App\Services\ApiResponse;
@@ -88,5 +90,29 @@ class SellerController extends Controller
         $sales = $this->saleRepository->getSalesBySellerId($seller->id);
 
         return ApiResponse::success($sales->toArray());
+    }
+
+    public function resendReport(ResendReportRequest $request, string $id)
+    {
+        if (!$seller = $this->sellerRepository->getSellerById($id)) {
+            return ApiResponse::error('Seller not found', Response::HTTP_NOT_FOUND);
+        }
+
+        $data = $request->validated();
+
+        $sales = $this->saleRepository->getSalesBySellerIdFromDate($seller->id, $data['date']);
+        if ($sales->isEmpty()) {
+            return ApiResponse::error('No sales found for today', Response::HTTP_NOT_FOUND);
+        }
+
+        SendSellerReportJob::dispatch(
+            $seller,
+            $sales->count(),
+            $sales->sum('value'),
+            $sales->sum('commission'),
+            $data['date']
+        );
+
+        return ApiResponse::success([], Response::HTTP_OK, 'Report resent successfully');
     }
 }

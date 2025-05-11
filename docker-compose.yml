@@ -1,29 +1,41 @@
 version: '3.8'
 
 services:
-#   app:
-    # build: .
-    # ports:
-    #   - "8000:80"
-    # networks:
-    #   - app-network
-    # depends_on:
-    #   - database
-    #   - redis
+#   web:
+#     build: .
+#     ports:
+#       - "9000:80"
+#     networks:
+#       - laravel
+#     depends_on:
+#       - db
+#       - mailhog
+#     environment:
+#       - MAIL_MAILER=smtp
+#       - MAIL_HOST=mailhog
+#       - MAIL_PORT=1025
 
-  database:
-    image: mysql:latest
+  db:
+    image: mysql
     ports:
       - "3306:3306"
     volumes:
-      - ./docker/db:/var/lib/mysql
+      - .docker/dbdata:/var/lib/mysql
     environment:
-      MYSQL_DATABASE: ${DB_DATABASE}
-      MYSQL_USER: ${DB_USERNAME}
-      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_DATABASE: desafio_tray
+      MYSQL_USER: mysql
+      MYSQL_PASSWORD: mysql
       MYSQL_ROOT_PASSWORD: root
     networks:
-      - app-network
+      - laravel
+
+  mailhog:
+    image: mailhog/mailhog
+    ports:
+      - "1025:1025"
+      - "8025:8025"
+    networks:
+      - laravel
 
   redis:
     image: redis:alpine
@@ -32,11 +44,11 @@ services:
     volumes:
       - redis_data:/data
     networks:
-      - app-network
+      - laravel
 
 networks:
-  app-network:
+  laravel:
     driver: bridge
 
 volumes:
-  redis_data:
+    redis_data:
