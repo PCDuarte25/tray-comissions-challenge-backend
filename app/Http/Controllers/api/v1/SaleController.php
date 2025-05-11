@@ -9,6 +9,7 @@ use App\Repositories\SaleRepository;
 use App\Services\ApiResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Cache;
 
 class SaleController extends Controller
 {
@@ -22,7 +23,10 @@ class SaleController extends Controller
      */
     public function index()
     {
-        $sales = $this->saleRepository->getAllSales();
+        $cacheKey = 'sales_all';
+        $sales = Cache::remember($cacheKey, 60, function () {
+            return $this->saleRepository->getAllSales();
+        });
 
         return ApiResponse::success($sales->toArray());
     }
@@ -36,6 +40,11 @@ class SaleController extends Controller
 
         $sale = $this->saleRepository->createSale($saleDto);
 
+        Cache::forget('sales_all');
+        Cache::forget("sale_{$sale->id}");
+        Cache::forget("seller_{$sale->seller_id}_sales");
+        Cache::tags(['sales', 'sellers'])->flush();
+
         return ApiResponse::success([
             'sale' => $sale
         ], Response::HTTP_CREATED, 'Sale created successfully');
@@ -46,7 +55,10 @@ class SaleController extends Controller
      */
     public function show(string $id)
     {
-        $sale = $this->saleRepository->getSaleById($id);
+        $cacheKey = "sales_$id";
+        $sale = Cache::remember($cacheKey, 60, function () use ($id) {
+            return $this->saleRepository->getSaleById($id);
+        });
 
         if (!$sale) {
             return ApiResponse::error('Sale not found', Response::HTTP_NOT_FOUND);
