@@ -12,6 +12,8 @@ use App\Repositories\SellerRepository;
 use App\Services\ApiResponse;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class SellerController extends Controller
 {
@@ -41,16 +43,17 @@ class SellerController extends Controller
      */
     public function store(StoreSellerRequest $request)
     {
-        $sellerDto = SellerDataDto::fromRequest($request);
+        return $this->executeInTransaction(function() use ($request) {
+            $sellerDto = SellerDataDto::fromRequest($request);
+            $seller = $this->sellerRepository->createSeller($sellerDto);
 
-        $seller = $this->sellerRepository->createSeller($sellerDto);
+            Cache::forget('sellers_all');
+            Cache::forget("sellers_{$seller->id}");
 
-        Cache::forget('sellers_all');
-        Cache::forget("sellers_{$seller->id}");
-
-        return ApiResponse::success([
-            'seller' => $seller
-        ], Response::HTTP_CREATED, 'Seller created successfully');
+            return ApiResponse::success([
+                'seller' => $seller
+            ], Response::HTTP_CREATED, 'Seller created successfully');
+        });
     }
 
     /**
@@ -76,43 +79,52 @@ class SellerController extends Controller
      */
     public function getSalesBySellerId(string $id)
     {
-        if (!$seller = $this->sellerRepository->getSellerById($id)) {
-            return ApiResponse::error('Seller not found', Response::HTTP_NOT_FOUND);
-        }
+        return $this->executeInTransaction(function() use ($id) {
+            $cacheKey = "sellers_{$id}_sales";
+            $cacheTags = ['sales', 'sellers'];
 
-        $cacheKey = "seller_{$id}_sales";
-        $cacheTags = ['sales', 'sellers'];
+            // $sales = Cache::tags($cacheTags)->remember($cacheKey, 30, function () use ($id) {
+            //     return $this->saleRepository->getSalesBySellerId($id);
+            // });
 
-        $sales = Cache::tags($cacheTags)->remember($cacheKey, 30, function () use ($id) {
-            return $this->saleRepository->getSalesBySellerId($id);
+            $sales = Cache::remember($cacheKey, 30, function () use ($id) {
+                return $this->saleRepository->getSalesBySellerId($id);
+            });
+
+            return ApiResponse::success($sales->toArray());
         });
-
-        $sales = $this->saleRepository->getSalesBySellerId($seller->id);
-
-        return ApiResponse::success($sales->toArray());
     }
 
     public function resendReport(ResendReportRequest $request, string $id)
     {
-        if (!$seller = $this->sellerRepository->getSellerById($id)) {
-            return ApiResponse::error('Seller not found', Response::HTTP_NOT_FOUND);
+        try {
+            if (!$seller = $this->sellerRepository->getSellerById($id)) {
+                return ApiResponse::error('Seller not found', Response::HTTP_NOT_FOUND);
+            }
+
+            $data = $request->validated();
+            $sales = $this->saleRepository->getSalesBySellerIdFromDate($seller->id, $data['date']);
+
+            if ($sales->isEmpty()) {
+                return ApiResponse::error('No sales found for today', Response::HTTP_NOT_FOUND);
+            }
+
+            SendSellerReportJob::dispatch(
+                $seller,
+                $sales->count(),
+                $sales->sum('value'),
+                $sales->sum('commission'),
+                $data['date']
+            );
+
+            return ApiResponse::success([], Response::HTTP_OK, 'Report resent successfully');
+
+        } catch (\Exception $e) {
+            Log::error('Error resending report: ' . $e->getMessage());
+            return ApiResponse::error(
+                'Failed to resend report',
+                Response::HTTP_INTERNAL_SERVER_ERROR
+            );
         }
-
-        $data = $request->validated();
-
-        $sales = $this->saleRepository->getSalesBySellerIdFromDate($seller->id, $data['date']);
-        if ($sales->isEmpty()) {
-            return ApiResponse::error('No sales found for today', Response::HTTP_NOT_FOUND);
-        }
-
-        SendSellerReportJob::dispatch(
-            $seller,
-            $sales->count(),
-            $sales->sum('value'),
-            $sales->sum('commission'),
-            $data['date']
-        );
-
-        return ApiResponse::success([], Response::HTTP_OK, 'Report resent successfully');
     }
 }

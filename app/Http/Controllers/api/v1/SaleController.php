@@ -3,12 +3,12 @@
 namespace App\Http\Controllers\api\v1;
 
 use App\DTOs\SaleDataDto;
+use App\HandlesTransactions;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreSaleRequest;
 use App\Repositories\ConfigurationRepository;
 use App\Repositories\SaleRepository;
 use App\Services\ApiResponse;
-use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Cache;
 
@@ -40,18 +40,21 @@ class SaleController extends Controller
      */
     public function store(StoreSaleRequest $request)
     {
-        $saleDto = SaleDataDto::fromRequest($request, $this->configurationRepository->getConfigurationByKey('commission_pct'));
+        return $this->executeInTransaction(function() use ($request) {
+            $commissionPct = $this->configurationRepository->getConfigurationByKey('commission_pct');
+            $saleDto = SaleDataDto::fromRequest($request, $commissionPct);
 
-        $sale = $this->saleRepository->createSale($saleDto);
+            $sale = $this->saleRepository->createSale($saleDto);
 
-        Cache::forget('sales_all');
-        Cache::forget("sale_{$sale->id}");
-        Cache::forget("seller_{$sale->seller_id}_sales");
-        Cache::tags(['sales', 'sellers'])->flush();
+            Cache::forget('sales_all');
+            Cache::forget("sale_{$sale->id}");
+            Cache::forget("seller_{$sale->seller_id}_sales");
+            // Cache::tags(['sales', 'sellers'])->flush();
 
-        return ApiResponse::success([
-            'sale' => $sale
-        ], Response::HTTP_CREATED, 'Sale created successfully');
+            return ApiResponse::success([
+                'sale' => $sale
+            ], Response::HTTP_CREATED, 'Sale created successfully');
+        });
     }
 
     /**

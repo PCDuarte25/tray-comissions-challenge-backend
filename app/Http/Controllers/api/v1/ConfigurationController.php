@@ -19,18 +19,21 @@ class ConfigurationController extends Controller
 
     public function updateConfiguration(ConfigurationRequest $request, string $id)
     {
-        $data = $request->validated();
+        return $this->executeInTransaction(function() use ($request, $id) {
+            $data = $request->validated();
+            $configuration = $this->configurationRepository->getConfigurationById($id);
 
-        $configuration = $this->configurationRepository->getConfigurationById($id);
-        if (!$configuration) {
-            return ApiResponse::error('Configuration not found', Response::HTTP_NOT_FOUND);
-        }
+            if (!$configuration) {
+                return ApiResponse::error('Configuration not found', Response::HTTP_NOT_FOUND);
+            }
 
-        $updatedConfiguration = $this->configurationRepository->updateConfiguration($id, $data['value']);
-        return ApiResponse::success(
-            ['configuration' => $updatedConfiguration],
-            Response::HTTP_OK,
-            'Configuration updated successfully'
-        );
+            $updatedConfiguration = $this->configurationRepository->updateConfiguration($id, $data['value']);
+
+            return ApiResponse::success(
+                ['configuration' => $updatedConfiguration],
+                Response::HTTP_OK,
+                'Configuration updated successfully'
+            );
+        });
     }
 }
