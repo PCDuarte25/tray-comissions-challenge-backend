@@ -3,12 +3,13 @@
 namespace App\DTOs;
 
 use App\Http\Requests\StoreSellerRequest;
+
 class SellerDataDto
 {
     public function __construct(
         public string $name,
         public string $email,
-        public int $created_by_id,
+        public int $created_by_id
     ) {}
 
     public static function fromRequest(StoreSellerRequest $request): self

@@ -18,7 +18,7 @@ interface SellerRepositoryInterface
      *
      * @return Seller|null
      */
-    public function getSellerById($id): ?Seller;
+    public function getSellerById(int $id): ?Seller;
 
     /**
      * @param App\DTOs\SellerDataDto $data

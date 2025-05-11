@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\api\v1\SaleController;
 use App\Http\Controllers\api\v1\SellerController;
 use App\Http\Controllers\AuthController;
 use Illuminate\Support\Facades\Route;
@@ -16,10 +17,15 @@ use Illuminate\Support\Facades\Route;
 */
 
 // This is the API route file for the application.
-Route::prefix('v1')->group(function () {
-    Route::post('/seller', [SellerController::class, 'store'])->middleware('auth:sanctum');
-    Route::get('/seller', [SellerController::class, 'index'])->middleware('auth:sanctum');
-    Route::get('/seller/{id}', [SellerController::class, 'show'])->middleware('auth:sanctum');
+Route::prefix('v1')->middleware('auth:sanctum')->group(function () {
+    Route::post('/seller', [SellerController::class, 'store']);
+    Route::get('/seller', [SellerController::class, 'index']);
+    Route::get('/seller/{id}', [SellerController::class, 'show']);
+    Route::get('/seller/{id}/sale', [SellerController::class, 'getSalesBySellerId']);
+
+    Route::post('/sale', [SaleController::class, 'store']);
+    Route::get('/sale', [SaleController::class, 'index']);
+    Route::get('/sale/{id}', [SaleController::class, 'show']);
 });
 
 // Auth routes.

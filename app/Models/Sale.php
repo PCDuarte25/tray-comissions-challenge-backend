@@ -45,6 +45,7 @@ class Sale extends Model
         'created_by_id',
         'value',
         'sale_date',
+        'commission',
     ];
 
     /**

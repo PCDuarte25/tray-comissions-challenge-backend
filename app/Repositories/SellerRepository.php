@@ -19,7 +19,7 @@ class SellerRepository implements SellerRepositoryInterface
      *
      * @return Seller|null
      */
-    public function getSellerById($id): ?Seller
+    public function getSellerById(int $id): ?Seller
     {
         return Seller::find($id);
     }
