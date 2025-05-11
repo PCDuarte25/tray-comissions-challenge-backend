@@ -28,6 +28,15 @@ interface SaleRepositoryInterface
     public function getSalesBySellerId(int $id): ?Collection;
 
     /**
+     * @param int $id
+     *
+     * @param string $date
+     *
+     * @return Illuminate\Database\Eloquent\Collection|null
+     */
+    public function getSalesBySellerIdFromDate(int $id, string $date): ?Collection;
+
+    /**
      * @param App\DTOs\SaleDataDto $data
      *
      * @return Sale
