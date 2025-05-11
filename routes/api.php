@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\api\v1\ConfigurationController;
 use App\Http\Controllers\api\v1\SaleController;
 use App\Http\Controllers\api\v1\SellerController;
 use App\Http\Controllers\AuthController;
@@ -28,6 +29,7 @@ Route::prefix('v1')->middleware('auth:sanctum')->group(function () {
     Route::get('/sale', [SaleController::class, 'index']);
     Route::get('/sale/{id}', [SaleController::class, 'show']);
 
+    Route::put('/configuration/{id}', [ConfigurationController::class, 'updateConfiguration']);
 });
 
 // Auth routes.

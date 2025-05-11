@@ -5,6 +5,7 @@ namespace App\Http\Controllers\api\v1;
 use App\DTOs\SaleDataDto;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreSaleRequest;
+use App\Repositories\ConfigurationRepository;
 use App\Repositories\SaleRepository;
 use App\Services\ApiResponse;
 use Illuminate\Http\Request;
@@ -16,7 +17,10 @@ class SaleController extends Controller
     /**
      * Creates a new instance of the SaleController.
      */
-    public function __construct(private SaleRepository $saleRepository) {}
+    public function __construct(
+        private SaleRepository $saleRepository,
+        private ConfigurationRepository $configurationRepository
+    ) {}
 
     /**
      * Display a listing of the resource.
@@ -36,7 +40,7 @@ class SaleController extends Controller
      */
     public function store(StoreSaleRequest $request)
     {
-        $saleDto = SaleDataDto::fromRequest($request);
+        $saleDto = SaleDataDto::fromRequest($request, $this->configurationRepository->getConfigurationByKey('commission_pct'));
 
         $sale = $this->saleRepository->createSale($saleDto);
 

@@ -3,17 +3,11 @@
 namespace App\DTOs;
 
 use App\Http\Requests\StoreSaleRequest;
+use App\Models\Configuration;
 use Carbon\Carbon;
 
 class SaleDataDto
 {
-    /**
-     * The commission percentage for the sale.
-     *
-     * @var float
-     */
-    const COMMISSION_PCT = 0.085;
-
     public function __construct(
         public int $seller_id,
         public int $created_by_id,
@@ -22,12 +16,11 @@ class SaleDataDto
         public float $commission
     ) {}
 
-    public static function fromRequest(StoreSaleRequest $request): self
+    public static function fromRequest(StoreSaleRequest $request, Configuration $commissionConfig): self
     {
         $validated = $request->validated();
         $value = $validated['value'];
-        // @todo mover pro controller
-        $commission = floor($value * self::COMMISSION_PCT * 100) / 100;
+        $commission = floor($value * $commissionConfig->value * 100) / 100;
 
         return new self(
             seller_id: $validated['seller_id'],
