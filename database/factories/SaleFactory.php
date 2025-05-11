@@ -2,7 +2,7 @@
 
 namespace Database\Factories;
 
-use COM;
+use App\Models\Seller;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -28,10 +28,9 @@ class SaleFactory extends Factory
         $commission = floor($value * self::COMMISSION_PCT * 100) / 100;
 
         return [
-            'seller_id' => $this->faker->numberBetween(1, 10),
+            'seller_id' => Seller::inRandomOrder()->first()->id ?? 1,
             'value' => $value,
             'sale_date' => $this->faker->dateTimeBetween('-2 weeks', 'now'),
-            'created_by_id' => 1,
             'commission' => $commission,
             'reported' => false,
         ];

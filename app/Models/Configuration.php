@@ -8,13 +8,11 @@ use Illuminate\Database\Eloquent\Model;
  * The Configuration model.
  *
  * @property int $id
- *   The identifier for the configuration.
  * @property string $key
- *   The key for the configuration.
  * @property string $value
- *   The value for the configuration.
  * @property string|null $description
- *   The description for the configuration.
+ * @property \Illuminate\Support\Carbon $created_at
+ * @property \Illuminate\Support\Carbon $updated_at
  */
 class Configuration extends Model
 {

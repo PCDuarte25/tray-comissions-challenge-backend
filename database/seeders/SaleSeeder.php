@@ -13,6 +13,8 @@ class SaleSeeder extends Seeder
      */
     public function run(): void
     {
-        Sale::factory(200)->create();
+        Sale::factory(200)->create([
+            'created_by_id' => 1,
+        ]);
     }
 }

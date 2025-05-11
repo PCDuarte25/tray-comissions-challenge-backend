@@ -19,7 +19,6 @@ class SellerFactory extends Factory
         return [
             'name' => $this->faker->name(),
             'email' => $this->faker->unique()->safeEmail(),
-            'created_by_id' => 1,
         ];
     }
 }

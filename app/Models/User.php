@@ -4,6 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -12,17 +13,16 @@ use Laravel\Sanctum\HasApiTokens;
  * The User model.
  *
  * @property int $id
- *   The identifier for the user.
  * @property string $name
- *   The name of the user.
  * @property string $email
- *   The email address of the user.
- * @property \Illuminate\Support\Carbon $email_verified_at
- *   The date and time the email was verified.
  * @property string $password
- *   The hashed password of the user.
- * @property string $remember_token
- *   The token used for remembering the user.
+ * @property \Illuminate\Support\Carbon|null $email_verified_at
+ * @property string|null $remember_token
+ * @property \Illuminate\Support\Carbon $created_at
+ * @property \Illuminate\Support\Carbon $updated_at
+ *
+ * @property-read \Illuminate\Database\Eloquent\Collection<\App\Models\Seller> $sellers
+ * @property-read \Illuminate\Database\Eloquent\Collection<\App\Models\Sale> $sales
  */
 class User extends Authenticatable
 {
@@ -61,5 +61,15 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function sellers(): HasMany
+    {
+        return $this->hasMany(Seller::class, 'created_by_id');
+    }
+
+    public function sales(): HasMany
+    {
+        return $this->hasMany(Sale::class, 'created_by_id');
     }
 }
