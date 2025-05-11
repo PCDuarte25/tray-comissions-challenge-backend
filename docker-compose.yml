@@ -23,9 +23,9 @@ services:
     volumes:
       - .docker/dbdata:/var/lib/mysql
     environment:
-      MYSQL_DATABASE: desafio_tray
-      MYSQL_USER: mysql
-      MYSQL_PASSWORD: mysql
+      MYSQL_DATABASE: tray_challenge
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
       MYSQL_ROOT_PASSWORD: root
     networks:
       - laravel
