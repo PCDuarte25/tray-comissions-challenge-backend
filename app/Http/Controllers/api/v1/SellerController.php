@@ -6,6 +6,8 @@ use App\DTOs\SellerDataDto;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ResendReportRequest;
 use App\Http\Requests\StoreSellerRequest;
+use App\Http\Resources\SaleResource;
+use App\Http\Resources\SellerResource;
 use App\Repositories\SaleRepository;
 use App\Repositories\SellerRepository;
 use App\Services\ApiResponse;
@@ -35,7 +37,9 @@ class SellerController extends Controller
             return $this->sellerRepository->getAllSellers();
         });
 
-        return ApiResponse::success($sellers->toArray());
+        return ApiResponse::success(
+            SellerResource::collection($sellers)
+        );
     }
 
     /**
@@ -71,7 +75,7 @@ class SellerController extends Controller
             return ApiResponse::error('Seller not found', Response::HTTP_NOT_FOUND);
         }
 
-        return ApiResponse::success($seller->toArray());
+        return ApiResponse::success(new SellerResource($seller));
     }
 
     /**
@@ -91,7 +95,9 @@ class SellerController extends Controller
                 return $this->saleRepository->getSalesBySellerId($id);
             });
 
-            return ApiResponse::success($sales->toArray());
+            return ApiResponse::success(
+                SaleResource::collection($sales)
+            );
         });
     }
 

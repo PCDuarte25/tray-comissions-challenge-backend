@@ -6,6 +6,7 @@ use App\DTOs\SaleDataDto;
 use App\HandlesTransactions;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreSaleRequest;
+use App\Http\Resources\SaleResource;
 use App\Repositories\ConfigurationRepository;
 use App\Repositories\SaleRepository;
 use App\Services\ApiResponse;
@@ -32,7 +33,9 @@ class SaleController extends Controller
             return $this->saleRepository->getAllSales();
         });
 
-        return ApiResponse::success($sales->toArray());
+        return ApiResponse::success(
+            SaleResource::collection($sales)
+        );
     }
 
     /**
@@ -71,6 +74,6 @@ class SaleController extends Controller
             return ApiResponse::error('Sale not found', Response::HTTP_NOT_FOUND);
         }
 
-        return ApiResponse::success($sale->toArray());
+        return ApiResponse::success(new SaleResource($sale));
     }
 }

@@ -10,13 +10,13 @@ class ApiResponse
     /**
      * Handle a successful response.
      *
-     * @param array $data
+     * @param mixed $data
      * @param int $statusCode
      * @param string|null $message
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public static function success(array $data = [], int $statusCode = Response::HTTP_OK, string $message = null): JsonResponse
+    public static function success(mixed $data = [], int $statusCode = Response::HTTP_OK, string $message = null): JsonResponse
     {
         return response()->json([
             'status_code' => $statusCode,
