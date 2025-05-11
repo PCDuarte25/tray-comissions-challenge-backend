@@ -6,13 +6,12 @@ use App\DTOs\SellerDataDto;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ResendReportRequest;
 use App\Http\Requests\StoreSellerRequest;
-use App\Jobs\SendSellerReportJob;
 use App\Repositories\SaleRepository;
 use App\Repositories\SellerRepository;
 use App\Services\ApiResponse;
+use App\Services\ReportService;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class SellerController extends Controller
@@ -22,7 +21,8 @@ class SellerController extends Controller
      */
     public function __construct(
         private SellerRepository $sellerRepository,
-        private SaleRepository $saleRepository
+        private SaleRepository $saleRepository,
+        private ReportService $reportService
     ) {}
 
     /**
@@ -103,17 +103,9 @@ class SellerController extends Controller
             }
 
             $data = $request->validated();
-            $sales = $this->saleRepository->getSalesBySellerIdFromDate($seller->id, $data['date']);
 
-            if ($sales->isEmpty()) {
-                return ApiResponse::error('No sales found for today', Response::HTTP_NOT_FOUND);
-            }
-
-            SendSellerReportJob::dispatch(
+            $this->reportService->sendSellerReport(
                 $seller,
-                $sales->count(),
-                $sales->sum('value'),
-                $sales->sum('commission'),
                 $data['date']
             );
 

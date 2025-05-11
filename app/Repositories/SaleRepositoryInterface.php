@@ -42,4 +42,8 @@ interface SaleRepositoryInterface
      * @return Sale
      */
     public function createSale(SaleDataDto $data): Sale;
+
+    public function getAllSalesByDate(string $date): Collection;
+    public function getUnreportedSalesByDate(string $date): Collection;
+    public function markSalesAsReported(array $saleIds): void;
 }

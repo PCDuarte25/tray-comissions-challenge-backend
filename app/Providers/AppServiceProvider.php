@@ -3,8 +3,13 @@
 namespace App\Providers;
 
 use App\Repositories\ConfigurationRepository;
+use App\Repositories\ConfigurationRepositoryInterface;
 use App\Repositories\SaleRepository;
+use App\Repositories\SaleRepositoryInterface;
 use App\Repositories\SellerRepository;
+use App\Repositories\SellerRepositoryInterface;
+use App\Services\ReportService;
+use App\Services\ReportServiceInterface;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -14,17 +19,13 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->app->singleton('SellerRepositoryInterface', function ($app) {
-            return new SellerRepository;
-        });
+        $this->app->singleton(SellerRepositoryInterface::class, SellerRepository::class);
 
-        $this->app->singleton('SaleRepositoryInterface', function ($app) {
-            return new SaleRepository;
-        });
+        $this->app->singleton(SaleRepositoryInterface::class, SaleRepository::class);
 
-        $this->app->singleton('ConfigurationRepositoryInterface', function ($app) {
-            return new ConfigurationRepository;
-        });
+        $this->app->singleton(ConfigurationRepositoryInterface::class, ConfigurationRepository::class);
+
+        $this->app->singleton(ReportServiceInterface::class, ReportService::class);
     }
 
     /**

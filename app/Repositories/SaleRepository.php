@@ -52,4 +52,22 @@ class SaleRepository implements SaleRepositoryInterface
     {
         return Sale::create($data->toArray());
     }
+
+    public function getAllSalesByDate(string $date): Collection
+    {
+        return Sale::whereDate('sale_date', $date)->get();
+    }
+
+    public function getUnreportedSalesByDate(string $date): Collection
+    {
+        return Sale::whereDate('sale_date', $date)
+            ->where('reported', false)
+            ->with('seller')
+            ->get();
+    }
+
+    public function markSalesAsReported(array $saleIds): void
+    {
+        Sale::whereIn('id', $saleIds)->update(['reported' => true]);
+    }
 }
