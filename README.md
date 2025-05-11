@@ -1,61 +1,98 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Desafio tray de vendas e comissões
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+## Instalação
 
-## About Laravel
+### Pré-requisitos
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+- Docker and Docker Compose instalados
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+### Configuração
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+1. **Clone o repositório**
+   ```bash
+   git clone https://github.com/yourusername/event-tickets-reservation-api.git
+   cd event-tickets-reservation-api
+   ```
 
-## Learning Laravel
+2. **Crie um arquivo `.env` baseado no `.env.example`**
+    ```bash
+    cp .env.example .env
+    ```
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+3. **Configure as variáveis de banco de dados no `.env`**
+    ```bash
+    DB_CONNECTION=mysql
+    DB_HOST=db
+    DB_PORT=3306
+    DB_DATABASE=tray_challenge
+    DB_USERNAME=user
+    DB_PASSWORD=password
+    ```
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+### Execução do projeto
+1. **Inicie os containers**
+   ```bash
+   docker-compose up -d --build
+   ```
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+2. **Execute as migrations e as seeders**
+   ```bash
+   docker-compose exec web php artisan migrate
+   docker-compose exec web php artisan db:seed --class=DatabaseSeeder
+   ```
+   ps: Se a migration falhar, espere um pouco antes de rodar, pois o banco pode ainda não ter sido inicializado corretamente.
 
-## Laravel Sponsors
+   As seeders irão criar 1 usuário admin, 10 vendedores, 200 vendas para os vendedores e 1 configuração de comissão (padrão 8.5%).
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+## API endpoints
 
-### Premium Partners
+A API estará disponível em `http://localhost:9000`
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development/)**
-- **[Active Logic](https://activelogic.com)**
+### Autenticação
 
-## Contributing
+* `POST /api/login`: Recebe os dados: `login` e `password` e retorna o usuário logado e o `token` de autenticação para API.
+* `POST /api/logout`: Recebe os dados: `login` e `password` e desloga o usuário que estava logado.
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### Vendedores
 
-## Code of Conduct
+* `POST /api/v1/seller`: Recebe os dados: `name` e `email`e retorna o vendedor criado.
+* `GET /api/v1/seller`: Retorna todos os vendedores existentes.
+* `GET /api/v1/seller/{id}`: Retorna um vendedor específico de acordo com a `id`.
+* `GET /api/v1/seller/{id}/sale`: Retorna todas as vendas de um vendedor específico.
+* `POST /api/v1/seller/{id}/resend-report`: Recebe o dado: `date` e reenvia o e-mail de comissão de vendas de uma data específica para um vendedor.
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+### Venda
 
-## Security Vulnerabilities
+* `POST /api/v1/sale`: Recebe os dados: `seller_id`, `value` e `sale_date` e retorna a venda criada.
+* `GET /api/v1/sale`: Retorna todas as vendas criadas.
+* `GET /api/v1/sale/{id}`: Retorna uma venda específica de acordo com a `id`.
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+### Configuração
 
-## License
+* `PUT /api/v1/configuration/{id}`: Recebe os dados: `key` e `value` e retorna a nova configuração atualizada.
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+### Envio de e-mails
+
+1. **Rode a queue**
+   ```bash
+   docker-compose exec web php artisan queue:work
+   ```
+
+2. **Rode o schedule**
+    ```bash
+   docker-compose exec web php artisan schedule:work
+   ```
+   ps: O schedule está marcado para rodar diariamente as 23:55, você pode forçar o `command` para rodar usando:
+   ```bash
+   docker-compose exec web php artisan app:send-daily-reports
+   ```
+
+Após isso a job irá rodar e enviar os e-mails para os vendedores que fizeram vendas no dia atual, além de um e-mail com relatório para o admin
+Para checar os e-mails você pode acessar o serviço do Mailhog entrando na url: http://localhost:8025/.
+
+### Otimizações
+* As APIs são cacheadas com Redis para aumentar a performance das requisições.
+* O envio de e-mails é utilizado com filas para efetuar o processamento assíncrono.
+* As operações de `create` e `update` no banco de dados foram enclausuradas por `transactions` para garantir a segurança do banco.
+* Utilização de índices para `seller_id`, `sale_date` e `reported` para otimizar as queries no banco de dados.
+
