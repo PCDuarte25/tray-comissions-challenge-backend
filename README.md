@@ -10,7 +10,7 @@
 
 1. **Clone o repositório**
    ```bash
-   git clone https://github.com/{seu_username}/tray-comissions-challenge-backend.git
+   git clone https://github.com/PCDuarte25/tray-comissions-challenge-backend.git
    cd tray-comissions-challenge-backend
    ```
 
