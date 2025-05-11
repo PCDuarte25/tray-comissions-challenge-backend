@@ -10,8 +10,8 @@
 
 1. **Clone o repositório**
    ```bash
-   git clone https://github.com/yourusername/event-tickets-reservation-api.git
-   cd event-tickets-reservation-api
+   git clone https://github.com/{seu_username}/tray-comissions-challenge-backend.git
+   cd tray-comissions-challenge-backend
    ```
 
 2. **Crie um arquivo `.env` baseado no `.env.example`**
