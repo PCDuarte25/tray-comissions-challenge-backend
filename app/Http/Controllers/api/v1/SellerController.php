@@ -70,7 +70,8 @@ class SellerController extends Controller
             $sellerDto = SellerDataDto::fromRequest($request);
             $seller = $this->sellerRepository->createSeller($sellerDto);
 
-            Cache::forget('sellers_all');
+            $page = request()->get('page', 1);
+            Cache::forget("sellers_all_page_$page");
             Cache::forget("sellers_{$seller->id}");
 
             return ApiResponse::success([

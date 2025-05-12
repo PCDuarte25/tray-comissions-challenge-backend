@@ -67,7 +67,8 @@ class SaleController extends Controller
 
             $sale = $this->saleRepository->createSale($saleDto);
 
-            Cache::forget('sales_all');
+            $page = request()->get('page', 1);
+            Cache::forget("sales_all_page_$page");
             Cache::forget("sale_{$sale->id}");
             Cache::forget("seller_{$sale->seller_id}_sales");
             Cache::tags(['sales', 'sellers'])->flush();
