@@ -6,9 +6,9 @@ COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 WORKDIR /usr/share/nginx
 
-RUN chown -R nginx:nginx .
-
 RUN composer install
+
+RUN chown -R nginx:nginx .
 
 RUN php artisan key:generate
 

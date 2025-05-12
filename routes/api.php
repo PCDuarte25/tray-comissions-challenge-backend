@@ -36,5 +36,5 @@ Route::prefix('v1')->middleware('auth:sanctum')->group(function () {
 });
 
 // Auth routes.
-Route::post('/login', [AuthController::class, 'login']);
+Route::post('/login', [AuthController::class, 'login'])->name('login');
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
