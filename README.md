@@ -55,7 +55,7 @@ A API estará disponível em `http://localhost:9000` e todas as requisições pa
 
 ### Vendedores
 
-* `POST /api/v1/seller`: Recebe os dados: `name` e `email`e retorna o vendedor criado.
+* `POST /api/v1/seller`: Recebe os dados: `name` e `email` e retorna o vendedor criado.
 * `GET /api/v1/seller`: Retorna todos os vendedores existentes.
 * `GET /api/v1/seller/{id}`: Retorna um vendedor específico de acordo com a `id`.
 * `GET /api/v1/seller/{id}/sale`: Retorna todas as vendas de um vendedor específico.
