@@ -51,7 +51,7 @@ A API estará disponível em `http://localhost:9000`
 ### Autenticação
 
 * `POST /api/login`: Recebe os dados: `email` e `password` e retorna o usuário logado e o `token` de autenticação para API.
-* `POST /api/logout`: Recebe os dados: `email` e `password` e desloga o usuário que estava logado.
+* `POST /api/logout`: Desloga o usuário que estava logado.
 
 ### Vendedores
 
