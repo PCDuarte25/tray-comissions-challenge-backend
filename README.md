@@ -46,7 +46,7 @@
 
 ## API endpoints
 
-A API estará disponível em `http://localhost:9000`
+A API estará disponível em `http://localhost:9000` e todas as requisições para os endpoints da API precisam do Header `Accept: application/json`
 
 ### Autenticação
 
