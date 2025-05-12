@@ -5,15 +5,25 @@ namespace App\Repositories;
 use App\DTOs\SaleDataDto;
 use App\Models\Sale;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 interface SaleRepositoryInterface
 {
     /**
      * Get all sales.
      *
-     * @return Illuminate\Database\Eloquent\Collection
+     * @return \Illuminate\Database\Eloquent\Collection
      */
     public function getAllSales(): Collection;
+
+    /**
+     * Get all sales paginated.
+     *
+     * @param int $pagLength
+     *
+     * @return \Illuminate\Pagination\LengthAwarePaginator
+     */
+    public function getAllSalesPaginated(int $pagLength = 20): LengthAwarePaginator;
 
     /**
      * Get sale by ID.
@@ -29,7 +39,7 @@ interface SaleRepositoryInterface
      *
      * @param int $id
      *
-     * @return Illuminate\Database\Eloquent\Collection|null
+     * @return \Illuminate\Database\Eloquent\Collection|null
      */
     public function getSalesBySellerId(int $id): ?Collection;
 
@@ -39,7 +49,7 @@ interface SaleRepositoryInterface
      * @param int $id
      * @param string $date
      *
-     * @return Illuminate\Database\Eloquent\Collection|null
+     * @return \Illuminate\Database\Eloquent\Collection|null
      */
     public function getSalesBySellerIdFromDate(int $id, string $date): ?Collection;
 
@@ -57,7 +67,7 @@ interface SaleRepositoryInterface
      *
      * @param string $date
      *
-     * @return Illuminate\Database\Eloquent\Collection
+     * @return \Illuminate\Database\Eloquent\Collection
      */
     public function getAllSalesByDate(string $date): Collection;
 
@@ -66,7 +76,7 @@ interface SaleRepositoryInterface
      *
      * @param string $date
      *
-     * @return Illuminate\Database\Eloquent\Collection
+     * @return \Illuminate\Database\Eloquent\Collection
      */
     public function getUnreportedSalesByDate(string $date): Collection;
 

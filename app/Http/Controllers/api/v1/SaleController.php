@@ -33,14 +33,21 @@ class SaleController extends Controller
      */
     public function index()
     {
-        $cacheKey = 'sales_all';
+        $page = request()->get('page', 1);
+        $cacheKey = "sales_all_page_$page";
         $sales = Cache::remember($cacheKey, 60, function () {
-            return $this->saleRepository->getAllSales();
+            return $this->saleRepository->getAllSalesPaginated(20);
         });
 
-        return ApiResponse::success(
-            SaleResource::collection($sales)
-        );
+        return ApiResponse::success([
+            'data' => SaleResource::collection($sales),
+            'meta' => [
+                'current_page' => $sales->currentPage(),
+                'last_page' => $sales->lastPage(),
+                'per_page' => $sales->perPage(),
+                'total' => $sales->total(),
+            ]
+        ]);
     }
 
     /**

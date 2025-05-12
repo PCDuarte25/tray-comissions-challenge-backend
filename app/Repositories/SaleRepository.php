@@ -5,6 +5,7 @@ namespace App\Repositories;
 use App\DTOs\SaleDataDto;
 use App\Models\Sale;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class SaleRepository implements SaleRepositoryInterface
 {
@@ -14,6 +15,14 @@ class SaleRepository implements SaleRepositoryInterface
     public function getAllSales(): Collection
     {
         return Sale::all();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getAllSalesPaginated(int $pagLength = 20): LengthAwarePaginator
+    {
+        return Sale::paginate($pagLength);
     }
 
     /**

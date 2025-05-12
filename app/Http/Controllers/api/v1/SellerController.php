@@ -38,14 +38,21 @@ class SellerController extends Controller
      */
     public function index()
     {
-        $cacheKey = 'sellers_all';
+        $page = request()->get('page', 1);
+        $cacheKey = "sellers_all_page_$page";
         $sellers = Cache::remember($cacheKey, 60, function () {
-            return $this->sellerRepository->getAllSellers();
+            return $this->sellerRepository->getAllSellersPaginated(20);
         });
 
-        return ApiResponse::success(
-            SellerResource::collection($sellers)
-        );
+        return ApiResponse::success([
+            'data' => SellerResource::collection($sellers),
+            'meta' => [
+                'current_page' => $sellers->currentPage(),
+                'last_page' => $sellers->lastPage(),
+                'per_page' => $sellers->perPage(),
+                'total' => $sellers->total(),
+            ]
+        ]);
     }
 
     /**

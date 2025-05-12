@@ -5,6 +5,7 @@ namespace App\Repositories;
 use App\DTOs\SellerDataDto;
 use App\Models\Seller;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class SellerRepository implements SellerRepositoryInterface
 {
@@ -14,6 +15,14 @@ class SellerRepository implements SellerRepositoryInterface
     public function getAllSellers(): Collection
     {
         return Seller::all();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getAllSellersPaginated(int $pagLength = 20): LengthAwarePaginator
+    {
+        return Seller::paginate($pagLength);
     }
 
     /**
